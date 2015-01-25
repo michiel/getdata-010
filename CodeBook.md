@@ -44,9 +44,9 @@ Once all the columns have descriptive names they are combined into the variable 
 
 The ```combinedSet``` is now deconstructed using the ```reshape``` function ```melt```. By specifying that we want subject and activity the rest of the data set is broken down into the corresponding ```variable``` observation and its ```value```.
 
-The set is then grouped according to subject, activity and variable, which allows us to calculate the average using the ```mean()``` function in ```summarize```.
-
 At each step the result is assigned to the variable ```res```.
+
+The set is then grouped according to subject, activity and variable, which allows us to calculate the average using the ```mean()``` function in ```summarize```. The mean value is stored in ```average``` following the naming convention of this step.
 
 The result is then written to ```/tmp/getdata-010-summary.txt```.
 

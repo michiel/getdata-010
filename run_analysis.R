@@ -73,7 +73,7 @@ res <- melt(combinedSet, id.vars=c('subject', 'activity'))
 # Group for processing
 res <- group_by(res, subject, activity, variable)
 
-# Calculate mean() for each value
+# Calculate mean() for each value and store it in the column 'average'
 res <- summarise(res, average=mean(value))
 
 write.table(res, '/tmp/getdata-010-summary.txt', row.names=FALSE, sep=',')

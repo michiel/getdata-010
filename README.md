@@ -15,7 +15,7 @@ The resulting data file can be read back using the following R code,
 
     data <- read.table('/tmp/getdata-010-summary.txt', sep=',')
 
-
+The steps taken in the analysis script are detailed in the file CodeBook.md
 
 
 
