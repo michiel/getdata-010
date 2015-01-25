@@ -19,7 +19,16 @@ The files are loaded into R and combined using ```rbind```. and assigned to vari
 ### 2. Extracts only the measurements on the mean and standard deviation for each measurement. 
 
 
-Descriptive values of the 
+Descriptive values of the measurement data (in ```xFull```) is found in the file ```features.txt```. This file is loaded and the names are used to assign descriptive names to the ```xFull``` columns.
+
+The names of the columns also contain the measurement types and we are only interested in the standard deviation and mean values. To filter out other columns a logical vector is used that matches only columns whose names contain the strings ```-std()``` or ```-mean()```. The result is assigned to ```xOnlyMeanAndStd```.
+
+
+### 3. Uses descriptive activity names to name the activities in the data set
 
     activity_labels.txt
-    features.txt
+
+### 4. Appropriately labels the data set with descriptive variable names. 
+
+
+### 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
