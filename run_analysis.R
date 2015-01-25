@@ -1,7 +1,9 @@
 library(reshape)
 library(dplyr)
 
-basePath= '/tmp/uci-dataset/'
+
+# basePath= '/tmp/uci-dataset/'
+basePath= './'
 
 pathTo <- function(fName) {
   res <- paste(c(basePath, fName), sep='', collapse='')
