@@ -20,6 +20,9 @@ readAndMerge <- function(fNames) {
 xFull  <- readAndMerge(c('train/X_train.txt', 'test/X_test.txt'))
 sFull  <- readAndMerge(c('train/subject_train.txt', 'test/subject_test.txt'))
 
+# I tried to clean up the reading functions with readAndMerge but get
+# unexpected results for yFull, so manually and step by step here
+
 yTest  <- read.table(pathTo("test/y_test.txt"))
 yTrain <- read.table(pathTo("train/y_train.txt"))
 yFull  <- rbind(yTest, yTrain)
@@ -71,7 +74,7 @@ res <- melt(combinedSet, id.vars=c('subject', 'activity'))
 res <- group_by(res, subject, activity, variable)
 
 # Calculate mean() for each value
-res <- summarise(res, mean=mean(value))
+res <- summarise(res, average=mean(value))
 
 write.table(res, '/tmp/getdata-010-summary.txt', row.names=FALSE, sep=',')
 
