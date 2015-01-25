@@ -1,3 +1,5 @@
+library(reshape)
+library(dplyr)
 
 basePath= '/home/moondust/tmp/uci-dataset/'
 
@@ -5,36 +7,75 @@ pathTo <- function(fName) {
   res <- paste(c(basePath, fName), sep='', collapse='')
 }
 
-# readAndMerge <- function(fNames) {
-#   rbind(vapply(fNames,function(x) {
-#     read.table(pathTo(x))
-#   }, data.frame
-#   ))
-# }
-# xFull  <- readAndMerge(c('train/X_train.txt', 'test/X_test.txt'))
+readAndMerge <- function(fNames) {
+  res = lapply(fNames,function(x) {
+    read.table(pathTo(x))
+  })
+  # merge_recurse is provided by reshape
+  merge_recurse(res)
+}
 
-xTrain <- read.table(pathTo('train/X_train.txt'))
-xTest  <- read.table(pathTo('test/X_test.txt'))
-xFull  <- rbind(xTrain, xTest)
-rm(xTrain)
-rm(xTest)
+### 1. Merge test and training data sets
 
-yTrain <- read.table(pathTo('train/y_train.txt'))
-yTest  <- read.table(pathTo('test/y_test.txt'))
-yFull  <- rbind(yTrain, yTest)
-rm(yTrain)
+xFull  <- readAndMerge(c('train/X_train.txt', 'test/X_test.txt'))
+sFull  <- readAndMerge(c('train/subject_train.txt', 'test/subject_test.txt'))
+
+yTest  <- read.table(pathTo("test/y_test.txt"))
+yTrain <- read.table(pathTo("train/y_train.txt"))
+yFull  <- rbind(yTest, yTrain)
 rm(yTest)
+rm(yTrain)
 
-sTrain <- read.table(pathTo('train/subject_train.txt'))
-sTest  <- read.table(pathTo('test/subject_test.txt'))
-sFull  <- rbind(sTrain, sTest)
-rm(sTrain)
-rm(sTest)
+### 2. Extracts only the measurements on the mean and standard deviation for each measurement. 
 
-# Grab the names from features.txt and apply them to X
-featureNames <- read.table(pathTo('features.txt'))[,2]
-names(xFull) <- featureNames
+# Grab the names from features.txt
+features <- read.table(pathTo('features.txt'))[,2]
+
+# and apply them to X
+names(xFull) <- features
 
 # Logical vector to filter only std and mean measurements
-xOnlyMeanAndStd <- xFull[,grepl('-std|-mean', colnames(xFull))]
+xOnlyMeanAndStd <- xFull[,grepl('-std()|-mean()', colnames(xFull))]
+
+### 3. Uses descriptive activity names to name the activities in the data set
+
+activities <- read.table(pathTo('activity_labels.txt'))[,2]
+activities <- gsub('_', '', tolower(as.character(activities)))
+
+yFull[,1] <- activities[yFull[,1]]
+
+
+### 4. Appropriately labels the data set with descriptive variable names. 
+
+# Clean up the names
+
+xNames <- names(xOnlyMeanAndStd)
+xNames <- gsub('-mean', '_Mean', xNames)
+xNames <- gsub('-std', '_StdDev', xNames)
+xNames <- gsub('[-()]', '', xNames)
+names(xOnlyMeanAndStd) <- xNames
+
+names(yFull) <- 'activity'
+names(sFull) <- 'subject'
+
+combinedSet <- cbind(sFull, yFull, xOnlyMeanAndStd )
+
+### 5. From the data set in step 4, creates a second, independent tidy data set
+###    with the average of each variable for each activity and each subject.
+
+# Break down the combinedSet with melt on subject and activity
+# This gives us a table of subject,activity,variable,value
+
+res <- melt(combinedSet, id.vars=c('subject', 'activity'))
+
+# Group for processing
+res <- group_by(res, subject, activity, variable)
+
+# Calculate mean() for each value
+res <- summarise(res, mean=mean(value))
+
+# Order for readability
+res <- arrange(res, subject, desc(activity))
+
+write.table(res, '/tmp/getdata-010-summary.txt', row.names=FALSE, sep=',')
 
