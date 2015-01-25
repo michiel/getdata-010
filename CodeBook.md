@@ -32,7 +32,17 @@ The numeric activity values in the  ```yFull``` are replaced with their correspo
 
 ### 4. Appropriately labels the data set with descriptive variable names. 
 
-To clean up and assign 
+To clean up the measurement column names with substitute '-mean' with '_Mean', '-std' with '_StdDev' and remove occurences of '-()'. ```yFull``` is named _activity_, ```sFull``` is names _subject_.
 
+Once all the columns have descriptive names they are combined into the variable ```combinedSet``` using the ```cbind``` (column-bind) function.
 
 ### 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+
+The ```combinedSet``` is now deconstructed using the ```reshape``` function ```melt```. By specifying that we want subject and activity the rest of the data set is broken down into the corresponding ```variable``` observation and its ```value```.
+
+The set is then grouped according to subject, activity and variable, which allows us to calculate the average using the ```mean()``` function in ```summarize```.
+
+At each step the result is assigned to the variable ```res```.
+
+The result is then written to ```/tmp/getdata-010-summary.txt```.
+

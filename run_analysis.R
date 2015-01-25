@@ -40,7 +40,6 @@ xOnlyMeanAndStd <- xFull[,grepl('-std()|-mean()', colnames(xFull))]
 ### 3. Uses descriptive activity names to name the activities in the data set
 
 activities <- read.table(pathTo('activity_labels.txt'))[,2]
-activities <- gsub('_', '', tolower(as.character(activities)))
 
 yFull[,1] <- activities[yFull[,1]]
 
@@ -73,9 +72,6 @@ res <- group_by(res, subject, activity, variable)
 
 # Calculate mean() for each value
 res <- summarise(res, mean=mean(value))
-
-# Order for readability
-res <- arrange(res, subject, desc(activity))
 
 write.table(res, '/tmp/getdata-010-summary.txt', row.names=FALSE, sep=',')
 
