@@ -14,7 +14,11 @@ For the initial loading of the data into R the different types (test, train) are
     train/y_train.txt
     train/subject_train.txt
 
-The files are loaded into R and combined using ```rbind```. and assigned to variables ```xFull```, ```yFull```, ```sFull```.
+The files are loaded into R and combined using ```rbind```. and assigned to variables ```xFull```, ```yFull```, ```sFull```. I used the file names when importing and kept the x, y, s naming scheme to simplify looking back at the source data. The lookup keys are,
+
+  * X - measurement data
+  * Y - activity
+  * S - subject
 
 ### 2. Extracts only the measurements on the mean and standard deviation for each measurement. 
 
